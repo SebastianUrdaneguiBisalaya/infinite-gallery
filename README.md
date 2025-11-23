@@ -1,29 +1,7 @@
-# react-components-starter
+# **@sebasurdanegui/infinite-gallery**
 
-A starter for creating a React component library.
+> Developed by [**Sebastian Marat Urdanegui Bisalaya**](https://www.sebastianurdanegui.com/)
 
-## Development
+## **Description**
 
-- Install dependencies:
-
-```bash
-npm install
-```
-
-- Run the playground:
-
-```bash
-npm run play
-```
-
-- Run the unit tests:
-
-```bash
-npm run test
-```
-
-- Build the library:
-
-```bash
-npm run build
-```
+## **Getting Started**
