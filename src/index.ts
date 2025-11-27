@@ -1,1 +1,1 @@
-export { MyButton } from './MyButton'
+export { InfiniteGallery } from './InfiniteGallery'
