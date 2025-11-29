@@ -1,7 +1,12 @@
+export type ILoadingProps = 'lazy' | 'eager';
+
+export type IDirectionProps = 'right' | 'left';
+
 export interface IInfiniteGalleryImageProps {
   alt?: string;
+  className?: string;
   id: string | number;
-  loading?: 'lazy' | 'eager';
+  loading?: ILoadingProps;
   srcSetDesktop?: string;
   srcSetMobile?: string;
   srcSetTablet?: string;
@@ -9,34 +14,74 @@ export interface IInfiniteGalleryImageProps {
 
 export interface IInfiniteGalleryProps {
   autoplay?: boolean;
-  breakPoints?: [number, number, number] | null;
+  breakpointDesktop?: number;
+  breakpointTablet?: number;
   className?: string;
-  direction?: 'right' | 'left';
+  classNameTier?: string;
+  classNameWrapper?: string;
+  direction?: IDirectionProps[];
   height?: number;
-  images?: IInfiniteGalleryImageProps[][] | null;
+  images?: IInfiniteGalleryImageProps[] | null;
   pauseOnHover?: boolean;
   pauseOnScroll?: boolean;
-  spaceBetween?: number;
+  quantityOfTiers?: number;
   velocity?: number;
-  wrapperClassName?: string;
 }
 
 export const InfiniteGallery: React.FC<IInfiniteGalleryProps> = ({
-  direction = 'right',
+  autoplay = true,
+  breakpointDesktop = 1024,
+  breakpointTablet = 768,
+  className,
+  classNameTier,
+  classNameWrapper,
+  direction = ['right'],
   height = 200,
   images,
   pauseOnHover = true,
   pauseOnScroll = false,
-  velocity = 10
+  quantityOfTiers = 1,
+  velocity = 10,
 }) => {
-  // Evaluate if the images data are null or empty
-  if (!images || images?.length === 0 || !images?.[0] || images?.[0]?.length === 0) {
+  if (!images || images?.length === 0) {
     console.warn('No images data provided.');
     return null;
   }
-  return (
-    <div>
+  if (quantityOfTiers !== direction.length) {
+    console.warn('The number of tiers must be equal to the number of directions.');
+  }
 
+  let batches: IInfiniteGalleryImageProps[][] = [];
+
+  for (let i = 0; i < images.length; i+= quantityOfTiers) {
+    batches.push(images.slice(i, i + quantityOfTiers));
+  }
+
+  return (
+    <div className={`wrapper_gallery_container ${classNameWrapper}`}>
+      {
+        batches.map((batch, idx) => (
+          <div
+            className={`wrapper_tier ${classNameTier}`}
+            key={idx}
+          >
+            {
+              batch.map((item, idx) => (
+                <div
+                  className={`wrapper_image ${className}`}
+                  key={idx}
+                >
+                  <picture>
+                    <source media={`(min-width: ${breakpointDesktop}px)`} srcSet={item.srcSetDesktop} />
+                    <source media={`(min-width: ${breakpointTablet}px)`} srcSet={item.srcSetTablet} />
+                    <img alt={item.alt} className={`image ${item.className}`} loading={item.loading} src={item.srcSetMobile} />
+                  </picture>
+                </div>
+              ))
+            }
+          </div>
+        ))
+      }
     </div>
   )
 }
